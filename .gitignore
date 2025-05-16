@@ -1,0 +1,64 @@
+# === General ===
+*.log
+*.pid
+*.pid.lock
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Python / Backend ===
+backend/app/__pycache__/
+backend/app/**/*.py[cod]
+backend/app/**/*.egg-info/
+backend/app/.pytest_cache/
+backend/app/.mypy_cache/
+backend/app/.pylint.d/
+backend/app/.ruff_cache/
+backend/app/.coverage
+backend/app/coverage.xml
+backend/app/htmlcov/
+backend/app/.venv
+backend/app/.vscode/
+
+# Ignore virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# SQLite or other local DBs
+*.sqlite3
+*.db
+
+# Model / image / video files
+*.pt
+*.pth
+*.onnx
+*.jpg
+*.jpeg
+*.png
+*.mp4
+*.avi
+media/
+static/uploads/
+
+# === Node / React Frontend ===
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.DS_Store
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnp/
+frontend/.pnp.js
+
+# === IDEs ===
+.vscode/
+.idea/
+
+# === OS ===
+.DS_Store
+
+.venv/

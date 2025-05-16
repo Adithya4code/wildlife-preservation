@@ -1,0 +1,8 @@
+fastapi[all]
+uvicorn
+sqlalchemy
+asyncpg
+psycopg2-binary
+pydantic
+redis
+ultralytics[cpu]
