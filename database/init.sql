@@ -22,3 +22,10 @@ INSERT INTO cameras (name, location, feed_url) VALUES
                                                    ('Camera 3', 'Restricted Area', 'http://localhost:8000/images/camera3.jpg'),
                                                    ('Camera 4', 'South Wall', 'http://localhost:8000/images/camera4.jpg'),
                                                    ('Camera 4', 'East Gate', 'http://localhost:8000/images/camera5.jpg');
+
+CREATE TABLE users (
+                       id SERIAL PRIMARY KEY,
+                       name VARCHAR(100) NOT NULL,
+                       email VARCHAR(255) UNIQUE NOT NULL,
+                       hashed_password TEXT NOT NULL
+);

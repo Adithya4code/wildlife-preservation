@@ -6,3 +6,5 @@ psycopg2-binary
 pydantic
 redis
 ultralytics[cpu]
+#passlib[bcrypt]
+#python-jose
