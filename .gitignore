@@ -20,6 +20,7 @@ backend/app/coverage.xml
 backend/app/htmlcov/
 backend/app/.venv
 backend/app/.vscode/
+backend/app/models/test.py
 
 # Ignore virtual environments
 .venv/

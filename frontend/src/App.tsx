@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate  } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -14,7 +14,7 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/login" element={<Navigate to="/auth/login" />} />
+                    <Route path="/auth/login" element={<Login />} />
                     <Route path="/auth/signup" element={<Signup />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     {/* Add more routes as needed */}

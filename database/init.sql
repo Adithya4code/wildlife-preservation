@@ -21,7 +21,7 @@ INSERT INTO cameras (name, location, feed_url) VALUES
                                                    ('Camera 2', 'Riverbank', 'http://localhost:8000/images/camera2.jpg'),
                                                    ('Camera 3', 'Restricted Area', 'http://localhost:8000/images/camera3.jpg'),
                                                    ('Camera 4', 'South Wall', 'http://localhost:8000/images/camera4.jpg'),
-                                                   ('Camera 4', 'East Gate', 'http://localhost:8000/images/camera5.jpg');
+                                                   ('Camera 5', 'East Gate', 'http://localhost:8000/images/camera5.jpg');
 
 CREATE TABLE users (
                        id SERIAL PRIMARY KEY,

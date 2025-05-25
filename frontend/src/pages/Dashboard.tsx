@@ -10,7 +10,6 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -22,6 +21,7 @@ import {
     ChartOptions,
 } from 'chart.js';
 import axios from 'axios';
+import {Bar} from "react-chartjs-2";
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -32,9 +32,16 @@ const Dashboard: React.FC = () => {
     const [selectedCamera, setSelectedCamera] = useState<string>('');
     const [cameras, setCameras] = useState<any[]>([]);
     const [alerts, setAlerts] = useState<any[]>([]);
+    const [processedImage, setProcessedImage] = useState<string | null>(null);
     const [chartData, setChartData] = useState({
-        labels: [] ,
-        datasets: [{ label: 'Detections Today', data: [] as number[], backgroundColor: 'rgba(75, 192, 192, 0.6)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 }],
+        labels: [] as string[],
+        datasets: [{
+            label: 'Detections Today',
+            data: [] as number[],
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }],
     });
     const [feedOpen, setFeedOpen] = useState(false);
 
@@ -55,7 +62,13 @@ const Dashboard: React.FC = () => {
             }
             setChartData({
                 labels: response.data.map((cam: any) => cam.name),
-                datasets: [{ label: 'Detections Today', data: response.data.map(() => 0), backgroundColor: 'rgba(75, 192, 192, 0.6)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 }],
+                datasets: [{
+                    label: 'Detections Today',
+                    data: response.data.map(() => 0),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }],
             });
         });
     }, []);
@@ -74,19 +87,20 @@ const Dashboard: React.FC = () => {
             const camera = cameras.find((cam) => cam.id.toString() === selectedCamera);
             if (camera) {
                 axios.post('http://localhost:8000/cameras/detect/', { camera_id: parseInt(selectedCamera) }).then((response) => {
-                    if (response.data.type !== 'No Detection') {
-                        const newAlert = {
-                            id: alerts.length + 1,
+                    setProcessedImage(response.data.image);
+                    if (response.data.detections.length > 0) {
+                        const newAlerts = response.data.detections.map((det: any, index: number) => ({
+                            id: alerts.length + index + 1,
                             time: new Date().toISOString(),
-                            camera: camera.name,
-                            type: response.data.type,
-                            details: response.data.details,
-                        };
-                        setAlerts([newAlert, ...alerts]);
+                            camera: response.data.camera_name,
+                            type: det.label,
+                            details: `Confidence: ${det.confidence}`,
+                        }));
+                        setAlerts([...newAlerts, ...alerts]);
                         setChartData((prev) => {
-                            const newData = [...prev.datasets[0].data] as number[];
+                            const newData = [...prev.datasets[0].data];
                             const index = cameras.findIndex((cam) => cam.id.toString() === selectedCamera);
-                            if (index !== -1) newData[index] = (newData[index] || 0) + 1;
+                            if (index !== -1) newData[index] = (newData[index] || 0) + response.data.total;
                             return { ...prev, datasets: [{ ...prev.datasets[0], data: newData }] };
                         });
                     }
@@ -97,7 +111,10 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const handleFeedClose = () => setFeedOpen(false);
+    const handleFeedClose = () => {
+        setFeedOpen(false);
+        setProcessedImage(null);
+    };
 
     return (
         <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
@@ -213,11 +230,15 @@ const Dashboard: React.FC = () => {
                             <Typography variant="h5" gutterBottom>
                                 {cameras.find((cam) => cam.id.toString() === selectedCamera)?.name} Feed
                             </Typography>
-                            <img
-                                src={cameras.find((cam) => cam.id.toString() === selectedCamera)?.feed_url}
-                                alt="Camera Feed"
-                                style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
-                            />
+                            {processedImage ? (
+                                <img
+                                    src={processedImage}
+                                    alt="Processed Camera Feed"
+                                    style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+                                />
+                            ) : (
+                                <Typography>Loading detection results...</Typography>
+                            )}
                             <Button variant="contained" onClick={handleFeedClose} sx={{ mt: 2 }}>
                                 Close
                             </Button>
